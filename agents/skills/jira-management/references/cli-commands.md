@@ -461,6 +461,67 @@ jira-mgmt comment PROJ-123 --body "Implementation notes:
 
 ---
 
+### jira-mgmt link
+
+Link issues to each other.
+
+```bash
+jira-mgmt link [ISSUE-KEY...] --type NAME --to ISSUE-KEY [flags]
+```
+
+**Flags:**
+- `--type NAME` — link type name, case-insensitive (required unless `--list-types`)
+- `--to ISSUE-KEY` — the issue the named issues point at (required unless `--list-types`/`--show`)
+- `--list-types` — list the link types configured on the instance
+- `--show` — print the links already on the named issues, with their ids
+- `--reverse` — swap the sides: `--to` becomes the subject of the sentence
+
+**Reading direction.** The named issues read with the type's outward wording and
+`--to` with its inward wording:
+
+```bash
+jira-mgmt link PROJ-1 --type Blocks --to PROJ-2     # "PROJ-1 blocks PROJ-2"
+```
+
+**Batch under one parent.** Several issues in one call all link to `--to`, so a
+parent needs `--reverse` to stay the subject:
+
+```bash
+jira-mgmt link PROJ-2 PROJ-3 --type Parent --to PROJ-1 --reverse
+# PROJ-1 parent of PROJ-2
+# PROJ-1 parent of PROJ-3
+```
+
+An unknown type is refused once, before any link is created, and the refusal
+lists the types the instance does have. A batch therefore cannot half-apply on a
+typo.
+
+**Sub-tasks.** Jira has no REST endpoint that converts a standard issue into a
+sub-task; that is the UI's Move operation. Where a parent/child relationship is
+wanted from the CLI, an issue link of a parent-shaped type is what is reachable.
+
+---
+
+### jira-mgmt unlink
+
+Remove issue links by id.
+
+```bash
+jira-mgmt unlink <LINK-ID...>
+```
+
+Ids come from `jira-mgmt link <ISSUE-KEY> --show`. Several ids in one call are
+removed in order.
+
+```bash
+jira-mgmt link PROJ-1 --show
+# PROJ-1:
+#   [5932251] parent of PROJ-2  Child task
+jira-mgmt unlink 5932251
+```
+
+---
+
 ### jira-mgmt dod
 
 Set Definition of Done criteria.

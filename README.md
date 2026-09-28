@@ -106,6 +106,8 @@ jira-mgmt transition PROJ-123 --to "In Progress"
 jira-mgmt cancel PROJ-123 --reason "прекращение работы с ICONIA"
 jira-mgmt comment PROJ-123 --body "Done, ready for review"
 jira-mgmt dod PROJ-123 --set "- Unit tests\n- Code review\n- Docs updated"
+jira-mgmt link PROJ-2 PROJ-3 --type Parent --to PROJ-1 --reverse
+jira-mgmt unlink 5932251
 ```
 
 ### Global Flags

@@ -187,6 +187,11 @@ jira-mgmt dod PROJ-123 --set "Tests pass\nCode reviewed"
 - `jira-mgmt cancel ISSUE-KEY --reason "..."` — cancel an issue with workflow-aware required fields
 - `jira-mgmt comment ISSUE-KEY --body "text"` — add comment
 - `jira-mgmt dod ISSUE-KEY --set "criteria"` — set Definition of Done
+- `jira-mgmt link ISSUE-KEY [ISSUE-KEY...] --type NAME --to ISSUE-KEY` — link issues
+  - `--list-types` prints the link types the instance offers, with the wording each side reads with
+  - `--show` prints the links already on the named issues, with their ids
+  - `--reverse` swaps the sides, which is what a batch under one parent needs
+- `jira-mgmt unlink LINK-ID [LINK-ID...]` — remove links by id (ids come from `--show`)
 
 ### Global Flags
 - `--project KEY` — override default project
@@ -217,6 +222,15 @@ jira-mgmt grep -i "performance"
 **User:** "Move PROJ-123 to done"
 ```bash
 jira-mgmt transition PROJ-123 --to "Done"
+```
+
+**User:** "Put these tasks under the epic PROJ-100"
+```bash
+# Jira has no API for converting a standard issue into a sub-task -- that is the
+# UI's Move operation. An issue link is the API-reachable relationship.
+jira-mgmt link --list-types
+jira-mgmt link PROJ-1 PROJ-2 PROJ-3 --type Parent --to PROJ-100 --reverse
+jira-mgmt link PROJ-100 --show
 ```
 
 **User:** "Assign these to me and put them in progress"
