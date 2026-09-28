@@ -19,3 +19,8 @@ CLAUDE.md
 
 # Agent artifacts (composed entrypoint, not product)
 AGENTS.md
+
+# Task board and its configuration: agent workflow state, not product
+.task-board
+task-board.config.json
+task-board.config.json.mutation.lock
