@@ -47,17 +47,37 @@ Examples:
 			return fmt.Errorf("--type is required (epic, story, task, subtask, bug)")
 		}
 
+		// Resolve the type against the instance: a localized Jira names its types
+		// in its own language, so the English shorthand is an alias to try, not
+		// the answer. The raw value wins when the instance knows it, which lets
+		// a caller name an exact type ("Подзадача на разработку") or its id.
+		issueType, err := client.ResolveIssueType(createType)
+		if err != nil {
+			alias := normalizeIssueType(createType)
+			resolved, aliasErr := client.ResolveIssueType(alias)
+			if aliasErr != nil {
+				return fmt.Errorf("%w (also tried %q)", err, alias)
+			}
+			issueType = resolved
+		}
+
 		req := &jira.CreateIssueRequest{
 			Fields: jira.CreateIssueFields{
 				Project:   jira.ProjectRef{Key: project},
-				IssueType: jira.IssueTypeRef{Name: normalizeIssueType(createType)},
+				IssueType: jira.IssueTypeRef{ID: issueType.ID},
 				Summary:   createSummary,
 				Labels:    createLabels,
 			},
 		}
 
 		if createDescription != "" {
-			req.Fields.Description = jira.NewADFText(createDescription)
+			// Server/DC v2 takes a plain string and refuses ADF outright
+			// ("Значение операции должно быть строкой"); Cloud v3 needs ADF.
+			if client.IsCloud() {
+				req.Fields.Description = jira.NewADFText(createDescription)
+			} else {
+				req.Fields.Description = createDescription
+			}
 		}
 		if createParent != "" {
 			req.Fields.Parent = &jira.IssueRef{Key: createParent}

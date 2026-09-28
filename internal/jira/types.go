@@ -209,10 +209,12 @@ type CreateIssueRequest struct {
 
 // CreateIssueFields holds the fields for issue creation.
 type CreateIssueFields struct {
-	Project     ProjectRef   `json:"project"`
-	IssueType   IssueTypeRef `json:"issuetype"`
-	Summary     string       `json:"summary"`
-	Description *ADFDoc      `json:"description,omitempty"`
+	Project   ProjectRef   `json:"project"`
+	IssueType IssueTypeRef `json:"issuetype"`
+	Summary   string       `json:"summary"`
+	// Description is ADF on Cloud v3 and a plain string on Server/DC v2, so it
+	// is typed loosely and the caller supplies the right shape.
+	Description interface{}  `json:"description,omitempty"`
 	Assignee    *UserRef     `json:"assignee,omitempty"`
 	Priority    *PriorityRef `json:"priority,omitempty"`
 	Labels      []string     `json:"labels,omitempty"`
@@ -228,7 +230,8 @@ type ProjectRef struct {
 	ID  string `json:"id,omitempty"`
 }
 
-// IssueTypeRef identifies an issue type by name.
+// IssueTypeRef identifies an issue type by id or by name. The id is preferred:
+// a localized instance may have several types sharing a name.
 type IssueTypeRef struct {
 	Name string `json:"name,omitempty"`
 	ID   string `json:"id,omitempty"`

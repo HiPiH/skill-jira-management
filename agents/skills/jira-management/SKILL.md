@@ -175,7 +175,9 @@ jira-mgmt dod PROJ-123 --set "Tests pass\nCode reviewed"
 
 ### Create
 - `jira-mgmt create --type <type> --summary "..." --project KEY`
-  - Types: `epic`, `story`, `task`, `subtask`, `bug`
+  - Types: `epic`, `story`, `task`, `subtask`, `bug` — English aliases
+  - A localized instance names its types in its own language and may offer several subtask types. Pass the instance's own name or the type id (`--type "Подзадача на разработку"`, `--type 10107`); a name shared by two types is refused with their ids. `jira-mgmt api GET /rest/api/2/issuetype` lists them.
+
   - Optional: `--description`, `--parent`, `--assignee`, `--priority`, `--labels`
 
 ### Update
