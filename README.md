@@ -108,6 +108,9 @@ jira-mgmt comment PROJ-123 --body "Done, ready for review"
 jira-mgmt dod PROJ-123 --set "- Unit tests\n- Code review\n- Docs updated"
 jira-mgmt link PROJ-2 PROJ-3 --type Parent --to PROJ-1 --reverse
 jira-mgmt unlink 5932251
+jira-mgmt fields PROJ-123
+jira-mgmt update PROJ-123 --clear-field "Smart Checklist"
+jira-mgmt api GET /rest/api/2/myself
 ```
 
 ### Global Flags

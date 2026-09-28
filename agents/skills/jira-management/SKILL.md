@@ -192,6 +192,13 @@ jira-mgmt dod PROJ-123 --set "Tests pass\nCode reviewed"
   - `--show` prints the links already on the named issues, with their ids
   - `--reverse` swaps the sides, which is what a batch under one parent needs
 - `jira-mgmt unlink LINK-ID [LINK-ID...]` — remove links by id (ids come from `--show`)
+- `jira-mgmt fields ISSUE-KEY` — every field the issue carries, custom ones included, with their ids (`--all` includes empty, `--field ID` prints one in full)
+- `jira-mgmt update ISSUE-KEY --field "NAME=VALUE"` / `--clear-field NAME` — set or clear any field by name or id
+- `jira-mgmt api METHOD /rest/...` — call a REST path directly, for plugin endpoints the typed commands do not cover
+
+A custom field can only be written when it is on the issue's edit screen. Jira
+refuses the rest with "cannot be set. It is not on the appropriate screen", and
+that is a screen configuration matter, not something the CLI can route around.
 
 ### Global Flags
 - `--project KEY` — override default project
